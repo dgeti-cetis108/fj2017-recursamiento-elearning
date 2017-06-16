@@ -3,12 +3,21 @@
 	vc->varchar | c->char | dt->datetime | df->default */
 drop schema if exists biblioteca;
 create schema if not exists biblioteca;
+use biblioteca;
+
 /*
 Usuarios
 	id int ai pk,
 	nombre vc(50) nn,
 	apellidos vc(50) nn,
 	email vc(200) nn df "sin@correo" */
+create table usuarios (
+	id int auto_increment,
+	nombre varchar(50) not null,
+	apellidos varchar(50) not null,
+	email varchar(200) not null default "sin@correo",
+	primary key (id)
+) engine=innodb;
 
 /*
 Autores
@@ -34,7 +43,7 @@ Editoriales
 create table editoriales (
 	id int auto_increment,
 	nombre varchar(200) not null,
-	direccion text nn,
+	direccion text not null,
 	email varchar(200) not null default "sin@correo",
 	sitio_web varchar(200) not null default "sin.sitio.web",
 	primary key (id)
@@ -74,3 +83,21 @@ Prestamos
 	fecha_entrega dt nn,
 	fecha_recepcion dt nn
 */
+create table prestamos (
+	id int auto_increment,
+	usuario_id int not null,
+	libro_id int not null,
+	fecha_entrega datetime not null,
+	fecha_recepcion datetime not null,
+	primary key (id),
+	constraint fk_prestamos_usuarios
+		foreign key (usuario_id)
+		references usuarios (id)
+			on delete restrict
+			on update cascade,
+	constraint fk_prestamos_libros
+		foreign key (libro_id)
+		references libros (id)
+			on delete restrict
+			on update cascade
+) engine=innodb;
