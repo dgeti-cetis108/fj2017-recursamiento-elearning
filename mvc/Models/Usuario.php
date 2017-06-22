@@ -1,6 +1,8 @@
 <?php
 namespace MVC\Models;
 
+require 'app/DbConexion/MySQL.php';
+
 use App\DbConexion\MySQL;
 
 class Usuario {
@@ -35,10 +37,10 @@ class Usuario {
         // TODO: codigo para eliminar un usuario
     }
 
-    public function Crear() {
+    public function Crear($nombre, $apellidos, $email) {
         $cnn = new MySQL();
         $sql = sprintf("insert into usuarios (nombre,apellidos,email) values ('%s', '%s', '%s')",
-                        $this->nombre, $this->apellidos, $this->email);
+                        $nombre, $apellidos, $email);
         $rst = $cnn->query($sql);
 
         if (!$rst) {
@@ -46,7 +48,17 @@ class Usuario {
         } else {
             $this->id = $cnn->insert_id;
             $cnn->close();
+            $this->nombre = $nombre;
+            $this->apellidos = $apellidos;
+            $this->email = $email;
             return true;
         }
     }
 }
+
+// pruebas: deberia borrarse este codigo
+$usuario = new Usuario();
+$usuario->Crear('Bidkar', 'Aragon', 'bidkar@cetis108.edu.mx');
+var_dump($usuario);
+
+unset($usuario);
