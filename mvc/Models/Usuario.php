@@ -22,7 +22,26 @@ class Usuario {
     }
 
     public function Todos() {
-        // TODO: codigo para obtener todos los usuarios
+        $cnn = new MySQL(); // abre una conexion con mysql
+        $sql = "select * from usuarios"; // se define la consulta a ejecutar
+        $rst = $cnn->query($sql); // se ejecuta la consulta previa
+
+        if (!$rst) {
+            die('Error al ejecutar la consulta: '.$cnn->error);
+        } elseif ($rst->num_rows > 0) {
+            $resultado = [];
+            while ($r = $rst->fetch_assoc()) {
+                $u = new Usuario;
+                $u->id = $r['id'];
+                $u->nombre = $r['nombre'];
+                $u->apellidos = $r['apellidos'];
+                $u->email = $r['email'];
+                array_push($resultado, $u);
+            }
+            return $resultado;
+        } else {
+            return false;
+        }
     }
 
     public function Buscar($id) {
@@ -57,8 +76,11 @@ class Usuario {
 }
 
 // pruebas: deberia borrarse este codigo
-$usuario = new Usuario();
-$usuario->Crear('Bidkar', 'Aragon', 'bidkar@cetis108.edu.mx');
-var_dump($usuario);
+// $usuario = new Usuario();
+// $usuario->Crear('Bidkar', 'Aragon', 'bidkar@cetis108.edu.mx');
+// var_dump($usuario);
+// unset($usuario);
 
-unset($usuario);
+$usuario = new Usuario();
+$resultado = $usuario->Todos();
+var_dump($resultado);
